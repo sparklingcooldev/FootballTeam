@@ -11,6 +11,7 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [password1, setPassword1] = useState("");
+    const [money, setMoney] = useState("0");
     const [curdata, setCurData] = useState();
     useEffect(() => {
         if (refresh) {
@@ -19,9 +20,9 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
         }
     }, [refresh])
     console.log(teams);
-    const hnames1 = ["No", "Name", "League", "Operation"];
+    const hnames1 = ["No", "Name", "League", "money", "Operation"];
     const rows1 = teams.map((data, i) => (
-        <TableRow key={data.name} onClick={() => { setCurData(data._id); setUserName(data.name) }}>
+        <TableRow key={data.name} onClick={() => { setCurData(data._id); setUserName(data.name);setMoney(data.money) }}>
             <TableCell>{i + 1}</TableCell>
             <TableCell >{data.name}</TableCell>
             <TableCell>
@@ -41,6 +42,7 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
                     }
                 </Select>
             </TableCell>
+            <TableCell >{data.money}</TableCell>
             <TableCell>
                 <Button color='primary' variant="contained" className='text-center' onClick={() => { UpgradeLeague(data._id) }}>
                     Upgrade LM
@@ -55,6 +57,7 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
         <StyledContainer>
             <Box style={{ margin: "auto" }}>
                 <Box><TextField type="text" value={username} onChange={(e) => setUserName(e.target.value)} placeholder="Username" /></Box>
+                <Box><TextField type="text" value={money} onChange={(e) => setMoney(e.target.value)} placeholder="Username" /></Box>
                 <Box><TextField type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" /></Box>
                 <Box><TextField type="password" onChange={(e) => setPassword1(e.target.value)} placeholder="Confirm Password" /></Box><br />
                 <Button color='secondary' variant="contained" className='text-center' onClick={() => {
@@ -62,11 +65,11 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
                         alert("correct password");
                         return;
                     }
-                    AddTeam(username, password);
+                    AddTeam(username, password, money);
                 }}>
                     Add
                 </Button>&nbsp;&nbsp;
-                <Button color='secondary' variant="contained" className='text-center' onClick={() => { UpdateTeam(curdata, username) }}>
+                <Button color='secondary' variant="contained" className='text-center' onClick={() => { UpdateTeam(curdata, username, money) }}>
                     Update
                 </Button>
             </Box>

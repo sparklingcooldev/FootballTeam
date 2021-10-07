@@ -32,7 +32,14 @@ const schema = new Schema(
       type: String,
       require: true
     },
-
+    money: {
+      type: Number,
+      require: true
+    },
+    country: {
+      type: String,
+      require: true
+    },
   },
 );
 

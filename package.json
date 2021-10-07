@@ -39,7 +39,9 @@
     "start": "concurrently \"yarn server\" \"yarn client\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "install-server": "cd api && npm install",
+    "heroku-postbuild": "yarn client && yarn build"
   },
   "eslintConfig": {
     "extends": [

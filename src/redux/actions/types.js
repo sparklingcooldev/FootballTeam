@@ -16,6 +16,9 @@ export const ADMIN_GET_LEAGUE = "ADMIN_GET_LEAGUE";
 export const ADMIN_REFRESH = "ADMIN_REFRESH";
 
 export const TO_GET_PLAYERS = "TO_GET_PLAYERS";
+export const TO_REFRESH = "TO_REFRESH";
+export const TO_GET_USER = "TO_GET_USER";
+export const TO_GET_OFFERCNT = "TO_GET_OFFERCNT";
 
 export const LM_GET_TEAM = "LM_GET_TEAM";
 export const LM_REFRESH = "LM_REFRESH";

@@ -12,10 +12,11 @@ const tokenList = {}
 var SALT_WORK_FACTOR = 10;
 
 router.get('/getData', (req, res) => {
-    User.find((err, data) => {
-        if (err) return res.json({ success: false, error: err });
-        return res.json({ success: true, data: data });
-    });
+    User.find()
+        .then((err, data) => {
+            if (err) return res.json({ success: false, error: err });
+            return res.json({ success: true, data: data })
+        });
 });
 
 router.post('/doRegisterUser', (req, res) => {
@@ -29,6 +30,7 @@ router.post('/doRegisterUser', (req, res) => {
             password: '0',
             permission: true,
             level: 0,
+            money: 5000000,
             confirmationCode: token,
         });
 
@@ -62,35 +64,40 @@ router.post('/doBlockUser', (req, res) => {
 });
 
 router.post('/doLoginUser', (req, res) => {
-    User.findOne({ username: req.body.username }).then((data) => {
-        if (!data) return res.json({ status: 'no user' });
-        else {
-            if (!data.permission) return res.json({ status: 'waiting for permission' });
+    User.findOne({ username: req.body.username }).populate('wanted.player_id')
+        .populate('wanted.team_id').populate('offered.player_id')
+        .populate('offered.team_id').then((data) => {
+            if (!data) return res.json({ status: 'no user' });
             else {
-                bcrypt.compare(req.body.password, data.password).then(isMatch => {
-                    if (isMatch) {
-                        const user = {
-                            id: data._id,
-                            username: req.body.username,
-                            password: req.body.password,
-                            level: data.level
-                        };
-                        const token = jwt.sign(user, config.secret, { expiresIn: config.tokenLife })
-                        const refreshToken = jwt.sign(user, config.refreshTokenSecret, { expiresIn: config.refreshTokenLife })
-                        const response = {
-                            success: true,
-                            token: "Bearer " + token,
-                            refreshToken: refreshToken,
+                if (!data.permission) return res.json({ status: 'waiting for permission' });
+                else {
+                    bcrypt.compare(req.body.password, data.password).then(isMatch => {
+                        if (isMatch) {
+                            const user = {
+                                id: data._id,
+                                username: req.body.username,
+                                password: req.body.password,
+                                level: data.level,
+                                wanted: data.wanted,
+                                offered: data.offered,
+                                money: data.money,
+                            };
+                            const token = jwt.sign(user, config.secret, { expiresIn: config.tokenLife })
+                            const refreshToken = jwt.sign(user, config.refreshTokenSecret, { expiresIn: config.refreshTokenLife })
+                            const response = {
+                                success: true,
+                                token: "Bearer " + token,
+                                refreshToken: refreshToken,
+                            }
+                            tokenList[refreshToken] = response
+                            res.status(200).json(response);
+                        } else {
+                            return res.json({ status: "password incorrect" });
                         }
-                        tokenList[refreshToken] = response
-                        res.status(200).json(response);
-                    } else {
-                        return res.json({ status: "password incorrect" });
-                    }
-                });
+                    });
+                }
             }
-        }
-    });
+        });
 });
 router.post('/token', (req, res) => {
     // refresh the damn token

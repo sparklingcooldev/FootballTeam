@@ -59,9 +59,9 @@ export function setUserPermission(id, permission) {
 
 //!!!!!!!!!!!!!!!!!!!!!!!PLAYER!!!!!!!!!!!!!!!!!!!!!!!
 
-export function AddPlayer(firstname, lastname, price) {
+export function AddPlayer(firstname, lastname, country, age, price) {
     return (dispatch) => {
-        axios.post('/api/adminController/AddPlayer', { firstname, lastname, price })
+        axios.post('/api/adminController/AddPlayer', { firstname, lastname, country, age, price })
             .then((res) => {
                 if (res.data.success)
                     dispatch({ type: ADMIN_REFRESH });
@@ -79,9 +79,9 @@ export function DeletePlayer(_id) {
     }
 }
 
-export function UpdatePlayer(_id, firstname, lastname, price) {
+export function UpdatePlayer(_id, firstname, lastname, country, age, price) {
     return (dispatch) => {
-        axios.post('/api/adminController/UpdatePlayer', { _id, firstname, lastname, price })
+        axios.post('/api/adminController/UpdatePlayer', { _id, firstname, lastname, country, age, price })
             .then((res) => {
                 if (res.data.success)
                     dispatch({ type: ADMIN_REFRESH });
@@ -101,9 +101,9 @@ export function ChangePlayerTeam(_id, teamid) {
 
 //!!!!!!!!!!!!!!!!!!!!!!!TEAMOWNER!!!!!!!!!!!!!!!!!!!!!!!
 
-export function AddTeam(username, password) {
+export function AddTeam(username, password, money) {
     return (dispatch) => {
-        axios.post('/api/adminController/AddTeam', { username, password })
+        axios.post('/api/adminController/AddTeam', { username, password, money })
             .then((res) => {
                 if (res.data.success)
                     dispatch({ type: ADMIN_REFRESH });
@@ -141,9 +141,9 @@ export function UpgradeLeague(_id) {
     }
 }
 
-export function UpdateTeam(_id, name) {
+export function UpdateTeam(_id, name, money) {
     return (dispatch) => {
-        axios.post('/api/adminController/UpdateTeam', { _id, name })
+        axios.post('/api/adminController/UpdateTeam', { _id, name, money })
             .then((res) => {
                 if (res.data.success)
                     dispatch({ type: ADMIN_REFRESH });

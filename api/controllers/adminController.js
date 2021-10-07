@@ -50,13 +50,13 @@ router.post('/ChangePlayerTeam', (req, res) => {
 
 router.post('/UpdatePlayer', (req, res) => {
     console.log(req.body.price);
-    Player.findOneAndUpdate({ _id: req.body._id }, { firstname: req.body.firstname, lastname: req.body.lastname, price: req.body.price }, (err) => {
+    Player.findOneAndUpdate({ _id: req.body._id }, { firstname: req.body.firstname, lastname: req.body.lastname, country: req.body.country, age: req.body.age, price: req.body.price }, (err) => {
         res.json({ success: true });
     });
 });
 
 router.post('/AddPlayer', (req, res) => {
-    const player = new Player({ firstname: req.body.firstname, lastname: req.body.lastname, team_id: "615d21218bfe5e2d5c13c50b", price: req.body.price });
+    const player = new Player({ firstname: req.body.firstname, lastname: req.body.lastname, team_id: "615d21218bfe5e2d5c13c50b", country: req.body.country, age: req.body.age, price: req.body.price });
 
     player.save(function (err) {
 
@@ -85,7 +85,7 @@ router.post('/UpgradeLeague', (req, res) => {
 });
 
 router.post('/UpdateTeam', (req, res) => {
-    User.findOneAndUpdate({ _id: req.body._id }, { name: req.body.name, username: req.body.name }, (err) => {
+    User.findOneAndUpdate({ _id: req.body._id }, { name: req.body.name, username: req.body.name, money: req.body.money }, (err) => {
         res.json({ success: true });
     });
 });
@@ -101,7 +101,8 @@ router.post('/AddTeam', (req, res) => {
             permission: true,
             level: "teamowner",
             parent_id: "615d21218bfe5e2d5c13c50b",
-            name: req.body.username
+            name: req.body.username,
+            money: req.body.money
         });
 
         bcrypt.hash(req.body.password, salt, function (err, hash) {
@@ -135,7 +136,8 @@ router.post('/AddLeague', (req, res) => {
             permission: true,
             level: "leaguemanager",
             parent_id: "615d21218bfe5e2d5c13c50b",
-            name: req.body.username
+            name: req.body.username,
+            money: 5000000
         });
 
         bcrypt.hash(req.body.password, salt, function (err, hash) {

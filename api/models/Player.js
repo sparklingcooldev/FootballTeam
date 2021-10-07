@@ -19,7 +19,27 @@ const schema = new Schema(
     price: {
       type: Number,
       require: true
-    }
+    },
+    age: {
+      type: Number,
+      require: true
+    },
+    country: {
+      type: String,
+      require: true
+    },
+    sellmoney: {
+      type: Number,
+      default: 0,
+    },
+    status: {
+      type: String,
+      default: "team"
+    },
+    offered: [{
+      type: Schema.Types.ObjectId,
+      ref: 'users'
+    }],
   },
   { versionKey: false, timestamps: true },
 );

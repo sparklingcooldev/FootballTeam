@@ -1,7 +1,10 @@
-import { TO_GET_PLAYERS } from '../actions/types';
+import { TO_GET_PLAYERS, TO_REFRESH, TO_GET_OFFERCNT, TO_GET_USER } from '../actions/types';
 
 const initState = {
-    players: []
+    players: [],
+    offercnt: 0,
+    refresh: 1,
+    user: null
 };
 
 export default function todo(state = initState, action) {
@@ -11,8 +14,25 @@ export default function todo(state = initState, action) {
             return {
                 ...state,
                 players: action.payload,
+                refresh: 0,
             }
-
+        case TO_GET_OFFERCNT:
+            return {
+                ...state,
+                offercnt: action.payload,
+                refresh: 0,
+            }
+        case TO_GET_USER:
+            return {
+                ...state,
+                user: action.payload,
+                refresh: 0,
+            }
+        case TO_REFRESH:
+            return {
+                ...state,
+                refresh: 1,
+            }
         default:
             return state
     }
