@@ -36,7 +36,7 @@
   "scripts": {
     "server": "npm start --prefix api",
     "client": "react-scripts start",
-    "dev": "concurrently \"yarn server\" \"yarn client\"",
+    "start": "concurrently \"yarn server\" \"yarn client\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
