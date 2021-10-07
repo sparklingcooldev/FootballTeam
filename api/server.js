@@ -8,7 +8,7 @@ const app = express()
 const config = require('../config/keys')
 
 //Controllers
-const AuthController = require('./controllers/AuthController')
+const AuthController = require('./controllers/authController')
 const PelletController = require('./controllers/PelletController')
 const adminController = require('./controllers/adminController');
 const TOController = require('./controllers/TOController');
