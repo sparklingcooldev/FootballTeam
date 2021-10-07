@@ -41,7 +41,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "install-server": "cd api && npm install",
-    "heroku-postbuild": "yarn install-server && yarn build"
+    "heroku-postbuild": "yarn install-server && yarn build && yarn server"
   },
   "eslintConfig": {
     "extends": [
