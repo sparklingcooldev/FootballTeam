@@ -12,9 +12,13 @@ const schema = new Schema(
       type: String,
       require: true
     },
-    team_id:{
-      type : Schema.Types.ObjectId,
-      ref : 'users'
+    team_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'users'
+    },
+    price: {
+      type: Number,
+      require: true
     }
   },
   { versionKey: false, timestamps: true },

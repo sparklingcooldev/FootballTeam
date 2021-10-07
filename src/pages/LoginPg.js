@@ -9,6 +9,8 @@ import * as Actions from '../redux/actions/FirstAction'
 
 import DashPNG from '../assets/images/Dash.jpg'
 import SocialButton from "../components/SocialButton";
+import { GoogleLogin } from 'react-google-login';
+import LoginGithub from 'react-login-github';
 
 const LoginPg = ({ doGetWholeData, doRegisterUser, doLoginUser, doBlockUser, id, failedCount }) => {
     const [username, setUserName] = useState('')
@@ -43,7 +45,8 @@ const LoginPg = ({ doGetWholeData, doRegisterUser, doLoginUser, doBlockUser, id,
         doLoginUser(formData, history)
     }
     const handleSocialLogin = (user) => {
-        console.log(user);
+        localStorage.setItem('jwtToken', "google");
+        history.push('/dashboard')
     };
 
     const handleSocialLoginFailure = (err) => {
@@ -52,37 +55,38 @@ const LoginPg = ({ doGetWholeData, doRegisterUser, doLoginUser, doBlockUser, id,
     return (
         <StyledContainer padding='12%'>
             <LoginCard>
-                <form onSubmit={handleSubmit}>
-                    <CardContent>
-                        <Box mt={4} display='flex' flexDirection='column' alignItems='center'>
-                            <UAvatar src={DashPNG} />
-                            <Box>
-                                <TextField
-                                    onChange={(e) => setUserName(e.target.value)}
-                                    type="text"
-                                />
-                            </Box>
-                            <Box>
-                                <TextField
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    type="password"
-                                />
-                            </Box>
-                            {/* <SocialButton
-                                provider="facebook"
-                                appId="YOUR_APP_ID"
-                                onLoginSuccess={handleSocialLogin}
-                                onLoginFailure={handleSocialLoginFailure}
-                            >
-                                Login with Facebook
-                            </SocialButton> */}
+                <CardContent>
+                    <Box display='flex' flexDirection='column' alignItems='center'>
+                        <UAvatar src={DashPNG} />
+                        <Box>
+                            <TextField
+                                onChange={(e) => setUserName(e.target.value)}
+                                type="text"
+                            />
                         </Box>
-                    </CardContent>
-                    <CardActions align="right">
-                        <Button type='submit' style={{ marginLeft: 'auto' }} size='small' color='primary' variant="contained">Login</Button>
-                        <Button onClick={handleRegUser.bind(this)} style={{ marginRight: 'auto' }} size='small' color='secondary' variant="contained">Register</Button>
-                    </CardActions>
-                </form>
+                        <Box>
+                            <TextField
+                                onChange={(e) => setPassword(e.target.value)}
+                                type="password"
+                            />
+                        </Box><br />
+
+                        <GoogleLogin
+                            clientId="149618790605-dfvkkbb9k3dbjkedilcminmhtjnftoqb.apps.googleusercontent.com"
+                            buttonText="Login with Google"
+                            onSuccess={handleSocialLogin}
+                            onFailure={handleSocialLoginFailure}
+                            cookiePolicy={'single_host_origin'}
+                        /><br />
+                        <LoginGithub clientId="9c553598235a383f3f26"
+                            onSuccess={handleSocialLogin}
+                            onFailure={handleSocialLoginFailure} />
+                    </Box>
+                </CardContent>
+                <CardActions align="right">
+                    <Button onClick={handleSubmit.bind(this)} style={{ marginLeft: 'auto' }} size='small' color='primary' variant="contained">Login</Button>
+                    <Button onClick={handleRegUser.bind(this)} style={{ marginRight: 'auto' }} size='small' color='secondary' variant="contained">Register</Button>
+                </CardActions>
             </LoginCard>
         </StyledContainer>
     );

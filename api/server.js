@@ -10,7 +10,9 @@ const config = require('../config/keys')
 //Controllers
 const AuthController = require('./controllers/AuthController')
 const PelletController = require('./controllers/PelletController')
-const adminController  = require('./controllers/adminController');
+const adminController = require('./controllers/adminController');
+const TOController = require('./controllers/TOController');
+const LMController = require('./controllers/LMController');
 
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
@@ -33,11 +35,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
-
+AuthController.use(require('./middlewares/tokenChecker'))
 // append /api for our http requests
 app.use('/api/authController', AuthController);
 app.use('/api/pelletController', PelletController);
 app.use('/api/adminController', adminController);
+app.use('/api/TOController', TOController);
+app.use('/api/LMController', LMController);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

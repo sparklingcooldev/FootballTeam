@@ -4,47 +4,27 @@ import styled from "styled-components"
 import { useEffect, useState } from 'react'
 
 import { connect } from 'react-redux'
-import { AddTeam, DeleteTeam, doGetWholeTeam, doGetWholeLeague, UpdateTeam, ChangeTeamLeague, UpgradeLeague } from "../redux/actions/AdminAction";
+import { AddTeam, DeleteTeam, UpdateTeam, GetTeam } from "../redux/actions/LeagueManagerAction";
+import { doLogoutUser } from "../redux/actions/FirstAction";
 import MyTable from "../components/MyTable";
 
-const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam, UpdateTeam, ChangeTeamLeague, UpgradeLeague, teams, leagues, refresh }) => {
+const AdminLeagueOwner = ({ AddTeam, DeleteTeam, UpdateTeam, GetTeam, doLogoutUser, teams, refresh, user }) => {
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [password1, setPassword1] = useState("");
     const [curdata, setCurData] = useState();
+    const history = useHistory()
     useEffect(() => {
         if (refresh) {
-            doGetWholeTeam();
-            doGetWholeLeague();
+            GetTeam(user.id);
         }
     }, [refresh])
-    console.log(teams);
-    const hnames1 = ["No", "Name", "League", "Operation"];
+    const hnames1 = ["No", "Name", "Operation"];
     const rows1 = teams.map((data, i) => (
         <TableRow key={data.name} onClick={() => { setCurData(data._id); setUserName(data.name) }}>
             <TableCell>{i + 1}</TableCell>
             <TableCell >{data.name}</TableCell>
             <TableCell>
-                <Select
-                    labelId="demo-customized-select-label"
-                    id="demo-customized-select"
-                    value={data.parent_id._id}
-                    onChange={(event) => { ChangeTeamLeague(data._id, event.target.value) }}
-                >
-                    <MenuItem value="615d21218bfe5e2d5c13c50b">
-                        <em>None</em>
-                    </MenuItem>
-                    {
-                        leagues.map(data => {
-                            return <MenuItem value={data._id}>{data.name}</MenuItem>
-                        })
-                    }
-                </Select>
-            </TableCell>
-            <TableCell>
-                <Button color='primary' variant="contained" className='text-center' onClick={() => { UpgradeLeague(data._id) }}>
-                    Upgrade LM
-                </Button>&nbsp;
                 <Button color='primary' variant="contained" className='text-center' onClick={() => { DeleteTeam(data._id); }}>
                     Remove
                 </Button>
@@ -53,7 +33,11 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
     ));
     return (
         <StyledContainer>
+            <Box display='flex' justifyContent='flex-end'>
+                <Box component='button' onClick={() => doLogoutUser(history)} margin='20px'>Logout</Box>
+            </Box>
             <Box style={{ margin: "auto" }}>
+
                 <Box><TextField type="text" value={username} onChange={(e) => setUserName(e.target.value)} placeholder="Username" /></Box>
                 <Box><TextField type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" /></Box>
                 <Box><TextField type="password" onChange={(e) => setPassword1(e.target.value)} placeholder="Confirm Password" /></Box><br />
@@ -62,7 +46,7 @@ const AdminTeamOwner = ({ doGetWholeTeam, doGetWholeLeague, AddTeam, DeleteTeam,
                         alert("correct password");
                         return;
                     }
-                    AddTeam(username, password);
+                    AddTeam(username, password, user.id);
                 }}>
                     Add
                 </Button>&nbsp;&nbsp;
@@ -85,10 +69,10 @@ const StyledContainer = styled(Box)`
 
 const fromStore = (store) => {
     return {
-        teams: store.AdminReducer.teams,
-        leagues: store.AdminReducer.leagues,
-        refresh: store.AdminReducer.refresh,
+        teams: store.LeagueManagerReducer.teams,
+        refresh: store.LeagueManagerReducer.refresh,
+        user: store.FirstReducer.user
     }
 }
 
-export default connect(fromStore, { AddTeam, DeleteTeam, doGetWholeTeam, UpdateTeam, doGetWholeLeague, ChangeTeamLeague, UpgradeLeague })(AdminTeamOwner)
+export default connect(fromStore, { AddTeam, DeleteTeam, UpdateTeam, GetTeam, doLogoutUser })(AdminLeagueOwner)

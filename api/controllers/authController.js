@@ -3,10 +3,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-const keys = require("../../config/keys");
+const config = require("../../config/keys");
+const nodemailer = require("../../config/nodemailer.config");
 
 const User = require('../models/User');
 
+const tokenList = {}
 var SALT_WORK_FACTOR = 10;
 
 router.get('/getData', (req, res) => {
@@ -17,7 +19,7 @@ router.get('/getData', (req, res) => {
 });
 
 router.post('/doRegisterUser', (req, res) => {
-    console.log(req.body);
+    const token = jwt.sign({ email: req.body.email }, config.secret);
     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
         if (err) return next(err);
 
@@ -27,6 +29,7 @@ router.post('/doRegisterUser', (req, res) => {
             password: '0',
             permission: true,
             level: 0,
+            confirmationCode: token,
         });
 
         bcrypt.hash(req.body.password, salt, function (err, hash) {
@@ -66,26 +69,21 @@ router.post('/doLoginUser', (req, res) => {
             else {
                 bcrypt.compare(req.body.password, data.password).then(isMatch => {
                     if (isMatch) {
-                        const payload = {
+                        const user = {
                             id: data._id,
                             username: req.body.username,
                             password: req.body.password,
                             level: data.level
                         };
-
-                        jwt.sign(
-                            payload,
-                            keys.secretOrKey,
-                            {
-                                expiresIn: 31556926 // 1 year in seconds
-                            },
-                            (err, token) => {
-                                return res.json({
-                                    success: true,
-                                    token: "Bearer " + token
-                                });
-                            }
-                        );
+                        const token = jwt.sign(user, config.secret, { expiresIn: config.tokenLife })
+                        const refreshToken = jwt.sign(user, config.refreshTokenSecret, { expiresIn: config.refreshTokenLife })
+                        const response = {
+                            success: true,
+                            token: "Bearer " + token,
+                            refreshToken: refreshToken,
+                        }
+                        tokenList[refreshToken] = response
+                        res.status(200).json(response);
                     } else {
                         return res.json({ status: "password incorrect" });
                     }
@@ -94,5 +92,26 @@ router.post('/doLoginUser', (req, res) => {
         }
     });
 });
-
+router.post('/token', (req, res) => {
+    // refresh the damn token
+    const postData = req.body
+    // if refresh token exists
+    if ((postData.refreshToken) && (postData.refreshToken in tokenList)) {
+        const user = {
+            id: data._id,
+            username: req.body.username,
+            password: req.body.password,
+            level: data.level
+        };
+        const token = jwt.sign(user, config.secret, { expiresIn: config.tokenLife })
+        const response = {
+            "token": token,
+        }
+        // update the token in the list
+        tokenList[postData.refreshToken].token = token
+        res.status(200).json(response);
+    } else {
+        res.status(404).send('Invalid request')
+    }
+})
 module.exports = router;

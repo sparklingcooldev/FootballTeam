@@ -63,3 +63,11 @@ export function doBlockUser(name) {
             })
     }
 }
+
+export function verifyUser(code) {
+    return (dispatch) => {
+        axios.get('/api/authController/' + "confirm/" + code).then((response) => {
+            return response.data;
+        });
+    }
+};

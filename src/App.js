@@ -5,6 +5,7 @@ import First from './pages/First';
 import LoginPg from './pages/LoginPg';
 import Dashboard from './pages/Dashboard';
 import PelletEntryAdd from './pages/Pellet/PelletEntryAdd';
+import Welcome from './pages/Welcome';
 import './utils/api'
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
                 <Route exact path="/login" component={LoginPg} />
                 <PrivateRoute exact path="/pellet_add" component={PelletEntryAdd} />
                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
+                <Route path="/confirm/:confirmationCode" component={Welcome} />
               </Switch>
             </Router>;
   }
