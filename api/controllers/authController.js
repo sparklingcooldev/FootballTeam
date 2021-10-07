@@ -27,9 +27,10 @@ router.post('/doRegisterUser', (req, res) => {
         const newPerson = new User({
             id: '0',
             username: req.body.username,
+            name : req.body.username,
             password: '0',
             permission: true,
-            level: 0,
+            level: "teamowner",
             money: 5000000,
             confirmationCode: token,
         });
